@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Navbar, Footer } from "@/components";
 import RevealOnScroll from "@/components/RevealOnScroll";
 
@@ -26,9 +27,21 @@ interface ProductDetailClientProps {
 export default function ProductDetailClient({ project }: ProductDetailClientProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const router = useRouter();
 
   const handleBackToShowcase = () => {
-    window.location.href = "/#showcase";
+    // Navigate to home page first, then scroll to showcase section
+    router.push("/");
+    // Use setTimeout to ensure the page has loaded before scrolling
+    setTimeout(() => {
+      const showcaseElement = document.getElementById("showcase");
+      if (showcaseElement) {
+        showcaseElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        // If element not found (page still loading), try with window.location
+        window.location.href = "/#showcase";
+      }
+    }, 100);
   };
 
   // Auto-slide functionality

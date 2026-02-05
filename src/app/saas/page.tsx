@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Navbar, Footer } from "@/components";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import CustomCursor from "@/components/CustomCursor";
@@ -103,58 +102,58 @@ export default function SaaSPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Header */}
           <RevealOnScroll>
-            <div className="text-center mb-20">
-              <div className="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-accent-primary/20 to-accent-primary/10 rounded-full mb-8 border border-accent-primary/30 backdrop-blur-sm">
-                <span className="relative flex h-3 w-3">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-accent-primary/20 to-accent-primary/10 rounded-full mb-6 border border-accent-primary/30 backdrop-blur-sm">
+                <span className="relative flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-accent-primary"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent-primary"></span>
                 </span>
-                <span className="text-accent-primary text-sm font-semibold tracking-wide">AI-Powered Solutions</span>
+                <span className="text-accent-primary text-xs font-semibold tracking-wide">AI-Powered Solutions</span>
               </div>
               
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-8">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
                 <span className="bg-gradient-to-r from-text-primary via-accent-primary/90 to-text-primary bg-clip-text text-transparent">
                   Our SaaS Products
                 </span>
               </h1>
               
-              <div className="flex items-center justify-center gap-4 mb-8">
-                <div className="h-px w-20 bg-gradient-to-r from-transparent via-accent-primary/50 to-accent-primary" />
+              <div className="flex items-center justify-center gap-4 mb-6">
+                <div className="h-px w-16 bg-gradient-to-r from-transparent via-accent-primary/50 to-accent-primary" />
                 <div className="relative">
                   <div className="absolute inset-0 bg-accent-primary/20 blur-md rounded-full" />
-                  <div className="relative w-3 h-3 rotate-45 border-2 border-accent-primary bg-background" />
+                  <div className="relative w-2.5 h-2.5 rotate-45 border-2 border-accent-primary bg-background" />
                 </div>
-                <div className="h-px w-20 bg-gradient-to-l from-transparent via-accent-primary/50 to-accent-primary" />
+                <div className="h-px w-16 bg-gradient-to-l from-transparent via-accent-primary/50 to-accent-primary" />
               </div>
               
-              <p className="max-w-3xl mx-auto text-xl sm:text-2xl text-text-secondary mb-8 leading-relaxed">
+              <p className="max-w-2xl mx-auto text-lg sm:text-xl text-text-secondary mb-6 leading-relaxed">
                 Discover our suite of AI-powered software solutions designed to transform your workflow, 
                 boost productivity, and drive innovation in your business.
               </p>
               
               {/* Coming Soon Notice */}
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-amber-500/10 to-amber-500/5 rounded-full border border-amber-500/30 backdrop-blur-sm">
-                <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-amber-500/10 to-amber-500/5 rounded-full border border-amber-500/30 backdrop-blur-sm">
+                <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-amber-500 font-semibold text-base">All products launching soon — Stay tuned!</span>
+                <span className="text-amber-500 font-semibold text-sm">All products launching soon — Stay tuned!</span>
               </div>
             </div>
           </RevealOnScroll>
 
           {/* Products Grid */}
-          <div className="grid md:grid-cols-2 gap-6 lg:gap-8 mb-20">
-            {aiProducts.map((product, index) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 mb-16">
+            {aiProducts.map((product) => (
               <RevealOnScroll key={product.slug}>
                 <Link href={`/showcase/${product.slug}`}>
-                  <div className="group h-full bg-gradient-to-br from-surface to-surface-elevated border border-border-custom rounded-3xl overflow-hidden hover:border-accent-primary/50 hover:shadow-[0_0_50px_rgba(0,255,255,0.2)] transition-all duration-500 cursor-pointer p-8 relative backdrop-blur-sm">
+                  <div className="group h-full bg-gradient-to-br from-surface to-surface-elevated border border-border-custom rounded-2xl overflow-hidden hover:border-accent-primary/50 hover:shadow-[0_0_40px_rgba(0,255,255,0.2)] transition-all duration-500 cursor-pointer p-6 relative backdrop-blur-sm">
                     {/* Coming Soon Badge */}
                     {product.comingSoon && (
-                      <div className="absolute top-6 right-6 z-10">
-                        <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/20 to-amber-500/10 text-amber-500 text-xs font-bold rounded-full border border-amber-500/40 backdrop-blur-sm">
-                          <span className="relative flex h-2 w-2">
+                      <div className="absolute top-4 right-4 z-10">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500/20 to-amber-500/10 text-amber-500 text-[10px] font-bold rounded-full border border-amber-500/40 backdrop-blur-sm">
+                          <span className="relative flex h-1.5 w-1.5">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-500"></span>
                           </span>
                           COMING SOON
                         </span>
@@ -162,34 +161,34 @@ export default function SaaSPage() {
                     )}
                     
                     {/* Product Icon */}
-                    <div className="mb-6">
-                      <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-primary/20 to-accent-primary/5 border border-accent-primary/20 group-hover:border-accent-primary/40 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 text-accent-primary">
+                    <div className="mb-4">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-accent-primary/20 to-accent-primary/5 border border-accent-primary/20 group-hover:border-accent-primary/40 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 text-accent-primary">
                         {product.icon}
                       </div>
                     </div>
 
                     {/* Content */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <div>
-                        <div className="flex items-center gap-3 mb-3 flex-wrap">
-                          <h3 className="text-2xl font-bold text-text-primary group-hover:text-accent-primary transition-colors">
+                        <div className="flex items-center gap-2 mb-2 flex-wrap">
+                          <h3 className="text-lg font-bold text-text-primary group-hover:text-accent-primary transition-colors">
                             {product.name}
                           </h3>
                         </div>
-                        <span className="inline-block px-3 py-1.5 bg-accent-primary/10 text-accent-primary text-xs font-semibold rounded-full border border-accent-primary/30 mb-4">
+                        <span className="inline-block px-2.5 py-1 bg-accent-primary/10 text-accent-primary text-[10px] font-semibold rounded-full border border-accent-primary/30 mb-3">
                           {product.category}
                         </span>
                       </div>
                       
-                      <p className="text-text-secondary leading-relaxed min-h-[80px]">
+                      <p className="text-sm text-text-secondary leading-relaxed min-h-[60px]">
                         {product.description}
                       </p>
                       
-                      <div className="flex flex-wrap gap-2 pt-2">
+                      <div className="flex flex-wrap gap-1.5 pt-1">
                         {product.tags.map((tag, tagIndex) => (
                           <span
                             key={tagIndex}
-                            className="px-3 py-1.5 text-xs bg-surface-elevated text-text-secondary rounded-full border border-border-custom group-hover:border-accent-primary/30 transition-colors"
+                            className="px-2 py-1 text-[10px] bg-surface-elevated text-text-secondary rounded-full border border-border-custom group-hover:border-accent-primary/30 transition-colors"
                           >
                             {tag}
                           </span>
@@ -198,9 +197,9 @@ export default function SaaSPage() {
                     </div>
 
                     {/* Hover Arrow */}
-                    <div className="flex items-center gap-2 text-accent-primary font-semibold mt-6 group-hover:gap-4 transition-all">
+                    <div className="flex items-center gap-2 text-accent-primary font-semibold text-sm mt-4 group-hover:gap-3 transition-all">
                       <span>Explore</span>
-                      <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                       </svg>
                     </div>
@@ -216,34 +215,34 @@ export default function SaaSPage() {
       </section>
 
       {/* Notify Section */}
-      <section className="pb-24 relative">
+      <section className="pb-20 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <RevealOnScroll>
-            <div className="bg-gradient-to-br from-surface to-surface-elevated border border-border-custom rounded-3xl p-10 sm:p-16 text-center backdrop-blur-sm relative overflow-hidden">
+            <div className="bg-gradient-to-br from-surface to-surface-elevated border border-border-custom rounded-2xl p-8 sm:p-12 text-center backdrop-blur-sm relative overflow-hidden">
               {/* Background decoration */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-accent-primary/5 rounded-full blur-[100px]" />
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent-primary/5 rounded-full blur-[100px]" />
+              <div className="absolute top-0 right-0 w-48 h-48 bg-accent-primary/5 rounded-full blur-[80px]" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-accent-primary/5 rounded-full blur-[80px]" />
               
               <div className="relative z-10">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-accent-primary/20 to-accent-primary/5 border border-accent-primary/30 mb-8">
-                  <svg className="w-10 h-10 text-accent-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-br from-accent-primary/20 to-accent-primary/5 border border-accent-primary/30 mb-6">
+                  <svg className="w-8 h-8 text-accent-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
                 </div>
                 
-                <h2 className="text-3xl sm:text-4xl font-bold text-text-primary mb-6">
+                <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-4">
                   Be the First to Know
                 </h2>
                 
-                <p className="text-lg text-text-secondary mb-10 max-w-2xl mx-auto leading-relaxed">
+                <p className="text-base text-text-secondary mb-8 max-w-xl mx-auto leading-relaxed">
                   Our AI-powered SaaS products are almost ready! Get notified when we launch and be among the first to experience the future of productivity.
                 </p>
                 
                 <Link
                   href="/#contact"
-                  className="group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-accent-primary to-accent-primary/80 text-velox-black font-bold rounded-xl hover:shadow-[0_0_50px_rgba(0,255,255,0.6)] transition-all duration-300 cursor-pointer text-lg"
+                  className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-accent-primary to-accent-primary/80 text-velox-black font-bold rounded-xl hover:shadow-[0_0_40px_rgba(0,255,255,0.6)] transition-all duration-300 cursor-pointer text-base"
                 >
-                  <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
                   Notify Me on Launch
@@ -254,23 +253,23 @@ export default function SaaSPage() {
 
           {/* CTA Section */}
           <RevealOnScroll>
-            <div className="mt-10">
-              <div className="bg-gradient-to-br from-accent-primary/10 via-accent-primary/5 to-transparent border border-accent-primary/20 rounded-3xl p-10 sm:p-16 text-center backdrop-blur-sm">
-                <h2 className="text-3xl sm:text-4xl font-bold text-text-primary mb-6">
+            <div className="mt-8">
+              <div className="bg-gradient-to-br from-accent-primary/10 via-accent-primary/5 to-transparent border border-accent-primary/20 rounded-2xl p-8 sm:p-12 text-center backdrop-blur-sm">
+                <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-4">
                   Need a Custom AI Solution?
                 </h2>
                 
-                <p className="text-lg text-text-secondary mb-10 max-w-2xl mx-auto leading-relaxed">
+                <p className="text-base text-text-secondary mb-8 max-w-xl mx-auto leading-relaxed">
                   We specialize in building tailored AI-powered applications. Let&apos;s discuss how we can 
                   create the perfect solution for your business needs.
                 </p>
                 
                 <Link
                   href="/#contact"
-                  className="group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-accent-primary to-accent-primary/80 text-velox-black font-bold rounded-xl hover:shadow-[0_0_50px_rgba(0,255,255,0.6)] transition-all duration-300 cursor-pointer text-lg"
+                  className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-accent-primary to-accent-primary/80 text-velox-black font-bold rounded-xl hover:shadow-[0_0_40px_rgba(0,255,255,0.6)] transition-all duration-300 cursor-pointer text-base"
                 >
                   Get in Touch
-                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </Link>
