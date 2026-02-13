@@ -145,7 +145,7 @@ export default function SaaSPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 mb-16">
             {aiProducts.map((product) => (
               <RevealOnScroll key={product.slug}>
-                <Link href={product.slug === "cursor-but-for-ui" ? `/saas/cursor-but-for-ui` : `/showcase/${product.slug}`}>
+                <Link href={product.slug === "cursor-but-for-ui" ? `/saas/cursor-for-ui` : `/showcase/${product.slug}`}>
                   <div className="group h-full bg-gradient-to-br from-surface to-surface-elevated border border-border-custom rounded-2xl overflow-hidden hover:border-accent-primary/50 hover:shadow-[0_0_40px_rgba(0,255,255,0.2)] transition-all duration-500 cursor-pointer p-6 relative backdrop-blur-sm">
                     {/* Coming Soon Badge */}
                     {product.comingSoon && (
