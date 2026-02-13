@@ -330,7 +330,7 @@ export default function CursorForUIPage() {
                   </span>
                 </div>
 
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.08] mb-6 tracking-tight">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.08] mb-6 tracking-tight min-h-[5.5rem] sm:min-h-[7rem] lg:min-h-[8.5rem] xl:min-h-[10rem]">
                   <span className="text-text-primary">Cursor,</span>
                   <br />
                   <span className="text-text-primary">but for&nbsp;</span>
