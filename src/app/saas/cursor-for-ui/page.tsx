@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { Navbar, Footer } from "../../../components";
 import RevealOnScroll from "../../../components/RevealOnScroll";
-import CustomCursor from "../../../components/CustomCursor";
 
 // ─── Animated counter ────────────────────────────────────────────────
 function useCounter(end: number, duration = 2000) {
@@ -308,7 +307,6 @@ export default function CursorForUIPage() {
 
   return (
     <main className="min-h-screen bg-background overflow-x-hidden">
-      <CustomCursor />
       <Navbar />
 
       {/* ── HERO ────────────────────────────────────────────────────── */}

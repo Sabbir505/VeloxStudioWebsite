@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Logo from "@/components/Logo";
-import CustomCursor from "@/components/CustomCursor";
 import RevealOnScroll from "@/components/RevealOnScroll";
 
 // EmailJS configuration
@@ -105,7 +104,6 @@ export default function ServicesPage() {
 
   return (
     <>
-      <CustomCursor />
       <div className="min-h-screen bg-background relative overflow-hidden">
         {/* Background Effects */}
         <div className="fixed inset-0 bg-mesh opacity-20 pointer-events-none" />

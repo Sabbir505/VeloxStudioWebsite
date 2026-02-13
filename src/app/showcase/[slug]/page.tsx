@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Navbar, Footer } from "@/components";
 import RevealOnScroll from "@/components/RevealOnScroll";
-import CustomCursor from "@/components/CustomCursor";
 import ProductDetailClient from "./ProductDetailClient";
 
 interface Project {
@@ -128,7 +127,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   return (
     <>
-      <CustomCursor />
       <ProductDetailClient project={project} />
     </>
   );

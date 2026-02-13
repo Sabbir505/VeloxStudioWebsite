@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import MagneticButton from "./MagneticButton";
 import RevealOnScroll from "./RevealOnScroll";
-import MouseFollow from "./MouseFollow";
 
 // Animated counter hook
 function useAnimatedCounter(end: number, duration: number = 2000, startOnView: boolean = true) {
@@ -215,12 +214,12 @@ export default function Hero() {
       <FloatingParticles />
 
       {/* Glowing Orb Effects - Enhanced with morph animation */}
-      <MouseFollow intensity={0.02} className="absolute top-1/4 left-1/4">
+      <div className="absolute top-1/4 left-1/4">
         <div className="w-[500px] h-[500px] bg-accent-primary/5 rounded-full blur-[100px] animate-morph" />
-      </MouseFollow>
-      <MouseFollow intensity={0.03} className="absolute bottom-1/4 right-1/4">
+      </div>
+      <div className="absolute bottom-1/4 right-1/4">
         <div className="w-[400px] h-[400px] bg-accent-primary/8 rounded-full blur-[80px] animate-morph" style={{ animationDelay: "-4s" }} />
-      </MouseFollow>
+      </div>
       
       {/* Floating orbs with different animations */}
       <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-accent-primary/5 rounded-full blur-[60px] animate-float" />

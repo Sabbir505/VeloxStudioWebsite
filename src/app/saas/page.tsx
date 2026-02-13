@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Navbar, Footer } from "@/components";
 import RevealOnScroll from "@/components/RevealOnScroll";
-import CustomCursor from "@/components/CustomCursor";
 
 interface AIProduct {
   name: string;
@@ -86,7 +85,6 @@ const aiProducts: AIProduct[] = [
 export default function SaaSPage() {
   return (
     <main className="min-h-screen bg-background">
-      <CustomCursor />
       <Navbar />
 
       {/* Hero Section */}

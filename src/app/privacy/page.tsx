@@ -2,12 +2,10 @@
 
 import Link from "next/link";
 import Logo from "@/components/Logo";
-import CustomCursor from "@/components/CustomCursor";
 
 export default function PrivacyPolicyPage() {
   return (
     <>
-      <CustomCursor />
       <div className="min-h-screen bg-background">
         {/* Header */}
         <header className="border-b border-border-custom bg-background/80 backdrop-blur-md sticky top-0 z-50">

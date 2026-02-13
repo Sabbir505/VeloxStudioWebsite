@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/components/Logo";
-import CustomCursor from "@/components/CustomCursor";
 import RevealOnScroll from "@/components/RevealOnScroll";
 
 const teamMembers = [
@@ -57,7 +56,6 @@ const teamMembers = [
 export default function TeamPage() {
   return (
     <>
-      <CustomCursor />
       <div className="min-h-screen bg-background relative overflow-hidden">
         {/* Background Effects */}
         <div className="fixed inset-0 bg-mesh opacity-20 pointer-events-none" />
