@@ -390,9 +390,32 @@ export default function CursorForUIPage() {
               </div>
             </RevealOnScroll>
 
-            {/* Right — interactive preview */}
+            {/* Right — product screenshot */}
             <RevealOnScroll>
-              <MockPreview />
+              <div className="relative w-full max-w-2xl mx-auto">
+                {/* Glow effect behind image */}
+                <div className="absolute -inset-4 bg-gradient-to-r from-accent-primary/20 via-purple-500/10 to-accent-primary/20 rounded-3xl blur-2xl opacity-60" />
+                {/* Screenshot frame */}
+                <div className="relative rounded-2xl border border-border-custom overflow-hidden shadow-2xl shadow-accent-primary/10 bg-surface">
+                  {/* Browser-style top bar */}
+                  <div className="flex items-center gap-2 px-4 py-2.5 bg-black/40 border-b border-white/10">
+                    <div className="flex gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                      <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                      <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                    </div>
+                    <div className="flex-1 mx-4">
+                      <div className="bg-white/5 rounded-md px-3 py-1 text-[11px] text-zinc-500 text-center font-mono">cursor-for-ui.veloxstudio.com</div>
+                    </div>
+                  </div>
+                  <img 
+                    src="/Showcase/cursor_for_ui_preview.png" 
+                    alt="Cursor for UI — AI-powered interface designer" 
+                    className="w-full h-auto"
+                    loading="eager"
+                  />
+                </div>
+              </div>
             </RevealOnScroll>
           </div>
         </div>

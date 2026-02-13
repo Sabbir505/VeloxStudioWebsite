@@ -35,7 +35,7 @@ const aiProducts: AIProduct[] = [
     category: "AI / Design",
     description: "AI-powered design assistant that helps create stunning user interfaces with intelligent cursor interactions and suggestions.",
     tags: ["AI", "Design", "Web App"],
-    comingSoon: true,
+    comingSoon: false,
     icon: (
       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" />
@@ -147,8 +147,8 @@ export default function SaaSPage() {
               <RevealOnScroll key={product.slug}>
                 <Link href={product.slug === "cursor-but-for-ui" ? `/saas/cursor-for-ui` : `/showcase/${product.slug}`}>
                   <div className="group h-full bg-gradient-to-br from-surface to-surface-elevated border border-border-custom rounded-2xl overflow-hidden hover:border-accent-primary/50 hover:shadow-[0_0_40px_rgba(0,255,255,0.2)] transition-all duration-500 cursor-pointer p-6 relative backdrop-blur-sm">
-                    {/* Coming Soon Badge */}
-                    {product.comingSoon && (
+                    {/* Coming Soon / Live Badge */}
+                    {product.comingSoon ? (
                       <div className="absolute top-4 right-4 z-10">
                         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500/20 to-amber-500/10 text-amber-500 text-[10px] font-bold rounded-full border border-amber-500/40 backdrop-blur-sm">
                           <span className="relative flex h-1.5 w-1.5">
@@ -156,6 +156,16 @@ export default function SaaSPage() {
                             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-500"></span>
                           </span>
                           COMING SOON
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="absolute top-4 right-4 z-10">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-green-500/20 to-green-500/10 text-green-400 text-[10px] font-bold rounded-full border border-green-500/40 backdrop-blur-sm">
+                          <span className="relative flex h-1.5 w-1.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-400"></span>
+                          </span>
+                          LIVE
                         </span>
                       </div>
                     )}
