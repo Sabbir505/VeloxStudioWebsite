@@ -30,5 +30,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "src/app/saas/cursor-but-for-ui"]
+  "exclude": ["node_modules", "src/app/saas/cursor-but-for-ui", "src/app/saas/cryptochart-ai", "src/app/saas/market-insight-analyzer", "src/app/saas/cv-forge"]
 }
