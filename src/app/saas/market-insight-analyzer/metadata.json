@@ -1,0 +1,5 @@
+{
+  "name": "Market Insight Analyzer",
+  "description": "AI-powered market validation platform using Google Gemini to analyze competitors, pricing, and user sentiment for product ideas.",
+  "requestFramePermissions": []
+}

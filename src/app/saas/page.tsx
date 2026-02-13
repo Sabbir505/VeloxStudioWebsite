@@ -21,7 +21,7 @@ const aiProducts: AIProduct[] = [
     category: "AI / Finance",
     description: "Advanced cryptocurrency charting platform powered by AI for smart trading insights and predictions.",
     tags: ["AI", "Finance", "Web App"],
-    comingSoon: true,
+    comingSoon: false,
     icon: (
       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
@@ -42,12 +42,12 @@ const aiProducts: AIProduct[] = [
     ),
   },
   {
-    name: "CV Builder AI",
-    slug: "cv-builder-ai",
+    name: "CV Forge",
+    slug: "cv-forge",
     category: "AI / Career",
-    description: "Smart resume builder powered by AI that creates professional CVs tailored to job descriptions and industry standards.",
+    description: "Transform your plain text resume into professionally designed CVs instantly using AI. Edit, preview, and download in 9 stunning template styles.",
     tags: ["AI", "Career", "Web App"],
-    comingSoon: true,
+    comingSoon: false,
     icon: (
       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
@@ -55,12 +55,12 @@ const aiProducts: AIProduct[] = [
     ),
   },
   {
-    name: "Market Mind AI",
-    slug: "market-mind-ai",
-    category: "AI / Analytics",
-    description: "Intelligent market analysis tool that leverages AI to provide deep insights into market trends and consumer behavior.",
-    tags: ["AI", "Analytics", "Web App"],
-    comingSoon: true,
+    name: "Market Insight Analyzer",
+    slug: "market-insight-analyzer",
+    category: "AI / Market Research",
+    description: "AI-powered market validation platform using Google Gemini to analyze competitors, pricing, and user sentiment for product ideas.",
+    tags: ["AI", "Market Research", "Web App"],
+    comingSoon: false,
     icon: (
       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
@@ -143,7 +143,7 @@ export default function SaaSPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 mb-16">
             {aiProducts.map((product) => (
               <RevealOnScroll key={product.slug}>
-                <Link href={product.slug === "cursor-but-for-ui" ? `/saas/cursor-for-ui` : `/showcase/${product.slug}`}>
+                <Link href={product.slug === "cursor-but-for-ui" ? `/saas/cursor-for-ui` : product.slug === "cryptochart-ai" ? `/saas/cryptochart-ai` : product.slug === "market-insight-analyzer" ? `/saas/market-insight-analyzer` : product.slug === "cv-forge" ? `/saas/cv-forge` : `/showcase/${product.slug}`}>
                   <div className="group h-full bg-gradient-to-br from-surface to-surface-elevated border border-border-custom rounded-2xl overflow-hidden hover:border-accent-primary/50 hover:shadow-[0_0_40px_rgba(0,255,255,0.2)] transition-all duration-500 cursor-pointer p-6 relative backdrop-blur-sm">
                     {/* Coming Soon / Live Badge */}
                     {product.comingSoon ? (

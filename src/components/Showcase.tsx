@@ -72,10 +72,10 @@ const projects: Project[] = [
     isMobileApp: false,
   },
   {
-    name: "CV Builder AI",
-    slug: "cv-builder-ai",
+    name: "CV Forge",
+    slug: "cv-forge",
     category: "AI / Career",
-    description: "Smart resume builder powered by AI that creates professional CVs tailored to job descriptions and industry standards.",
+    description: "Transform your plain text resume into professionally designed CVs instantly using AI. Edit, preview, and download in 9 stunning template styles.",
     images: ["/Showcase/CV_builder_AI.png"],
     tags: ["AI", "Career", "Web App"],
     isMobileApp: false,
@@ -87,6 +87,15 @@ const projects: Project[] = [
     description: "Intelligent market analysis tool that leverages AI to provide deep insights into market trends and consumer behavior.",
     images: ["/Showcase/market_mind_AI.png"],
     tags: ["AI", "Analytics", "Web App"],
+    isMobileApp: false,
+  },
+  {
+    name: "Market Insight Analyzer",
+    slug: "market-insight-analyzer",
+    category: "AI / Market Research",
+    description: "AI-powered market validation platform using Google Gemini to analyze competitors, pricing, and user sentiment for product ideas.",
+    images: ["/Showcase/market_mind_AI.png"],
+    tags: ["AI", "Market Research", "Web App"],
     isMobileApp: false,
   },
   {
@@ -164,6 +173,12 @@ export default function Showcase() {
   const openProductPage = (project: Project) => {
     if (project.slug === "cursor-for-ui") {
       router.push("/saas/cursor-for-ui");
+    } else if (project.slug === "cryptochart-ai") {
+      router.push("/saas/cryptochart-ai");
+    } else if (project.slug === "market-insight-analyzer") {
+      router.push("/saas/market-insight-analyzer");
+    } else if (project.slug === "cv-forge") {
+      router.push("/saas/cv-forge");
     } else {
       router.push(`/showcase/${project.slug}`);
     }

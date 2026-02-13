@@ -82,15 +82,15 @@ const projects: Project[] = [
     features: ["AI design suggestions", "Smart cursor interactions", "Component library", "Design system integration", "Real-time collaboration", "Export to code"],
   },
   {
-    name: "CV Builder AI",
-    slug: "cv-builder-ai",
+    name: "CV Forge",
+    slug: "cv-forge",
     category: "AI / Career",
-    description: "Smart resume builder powered by AI that creates professional CVs tailored to job descriptions and industry standards.",
-    fullDescription: "CV Builder AI takes the stress out of resume creation with its intelligent, AI-powered platform. Simply input your experience and skills, and our advanced algorithms will craft a professional CV tailored to your target industry and specific job descriptions. With ATS optimization and expert formatting, your resume will stand out to both automated systems and human recruiters.",
+    description: "Transform your plain text resume into professionally designed CVs instantly using AI.",
+    fullDescription: "CV Forge transforms your plain text resume into professionally designed CVs using Gemini AI. Paste any text — your LinkedIn bio, a rough draft, or a bullet-point list — and the AI parses it into structured sections. Choose from 9 beautiful templates (Modern, Classic, Minimal, Professional, Creative, Academic, Tech, Elegant, Compact), edit inline with a split-view editor, and download as a high-resolution PNG ready for print.",
     images: ["/Showcase/CV_builder_AI.png", "/Showcase/CV_builder_AI_!.png"],
     tags: ["AI", "Career", "Web App"],
     isMobileApp: false,
-    features: ["AI content generation", "ATS optimization", "Multiple templates", "Job-specific tailoring", "Skills analysis", "Export to PDF/Word"],
+    features: ["AI text parsing", "9 professional templates", "Live inline editor", "High-res PNG export", "A4 auto-scaling", "Split view mode"],
   },
   {
     name: "Market Mind AI",
@@ -127,6 +127,18 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   if (slug === "cursor-for-ui") {
     redirect("/saas/cursor-for-ui");
+  }
+
+  if (slug === "cryptochart-ai") {
+    redirect("/saas/cryptochart-ai");
+  }
+
+  if (slug === "market-insight-analyzer") {
+    redirect("/saas/market-insight-analyzer");
+  }
+
+  if (slug === "cv-forge") {
+    redirect("/saas/cv-forge");
   }
 
   const project = projects.find((p) => p.slug === slug);
