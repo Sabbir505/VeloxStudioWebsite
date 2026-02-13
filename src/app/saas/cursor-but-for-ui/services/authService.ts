@@ -1,64 +1,104 @@
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+  signInWithPopup,
+  updateProfile,
+  sendPasswordResetEmail,
+  type User as FirebaseUser,
+} from 'firebase/auth';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { auth, db } from './firebase';
 import { User } from '../types';
 
-const USERS_KEY = 'cursorui_users';
-const SESSION_KEY = 'cursorui_session';
+// Convert Firebase user to app User
+function toAppUser(fbUser: FirebaseUser): User {
+  return {
+    id: fbUser.uid,
+    email: fbUser.email || '',
+    name: fbUser.displayName || fbUser.email?.split('@')[0] || 'User',
+  };
+}
+
+const googleProvider = new GoogleAuthProvider();
+const githubProvider = new GithubAuthProvider();
 
 export const authService = {
-  // Simulate network delay
-  delay: (ms: number) => new Promise(resolve => setTimeout(resolve, ms)),
-
-  async login(email: string): Promise<User> {
-    await this.delay(800); // Fake network request
-    
-    // In a real app, we'd verify password. Here, we just check if user exists or auto-create for demo
-    // For this specific requirement, we just need to bind storage to email.
-    
-    // Check if user exists in our "db"
-    const usersRaw = localStorage.getItem(USERS_KEY);
-    const users: User[] = usersRaw ? JSON.parse(usersRaw) : [];
-    
-    let user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-    
-    if (!user) {
-        throw new Error("User not found. Please sign up.");
-    }
-
-    // Set session
-    localStorage.setItem(SESSION_KEY, JSON.stringify(user));
-    return user;
+  // ─── Email + Password ─────────────────────────────────────
+  async login(email: string, password: string): Promise<User> {
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    return toAppUser(cred.user);
   },
 
-  async signup(email: string, name: string): Promise<User> {
-    await this.delay(1000);
-    
-    const usersRaw = localStorage.getItem(USERS_KEY);
-    const users: User[] = usersRaw ? JSON.parse(usersRaw) : [];
-    
-    if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
-        throw new Error("Email already registered.");
-    }
+  async signup(email: string, password: string, name: string): Promise<User> {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(cred.user, { displayName: name });
 
-    const newUser: User = {
-        id: `user-${Date.now()}`,
-        email,
-        name
-    };
+    // Create Firestore user doc
+    await setDoc(doc(db, 'users', cred.user.uid), {
+      email,
+      name,
+      plan: 'free',
+      createdAt: serverTimestamp(),
+    });
 
-    users.push(newUser);
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-    
-    // Auto login after signup
-    localStorage.setItem(SESSION_KEY, JSON.stringify(newUser));
-    
-    return newUser;
+    return toAppUser(cred.user);
   },
 
-  logout() {
-    localStorage.removeItem(SESSION_KEY);
+  // ─── OAuth Providers ──────────────────────────────────────
+  async loginWithGoogle(): Promise<User> {
+    const cred = await signInWithPopup(auth, googleProvider);
+    // Create/update user doc on first OAuth login
+    const userRef = doc(db, 'users', cred.user.uid);
+    const snap = await getDoc(userRef);
+    if (!snap.exists()) {
+      await setDoc(userRef, {
+        email: cred.user.email,
+        name: cred.user.displayName || '',
+        plan: 'free',
+        createdAt: serverTimestamp(),
+      });
+    }
+    return toAppUser(cred.user);
+  },
+
+  async loginWithGithub(): Promise<User> {
+    const cred = await signInWithPopup(auth, githubProvider);
+    const userRef = doc(db, 'users', cred.user.uid);
+    const snap = await getDoc(userRef);
+    if (!snap.exists()) {
+      await setDoc(userRef, {
+        email: cred.user.email,
+        name: cred.user.displayName || '',
+        plan: 'free',
+        createdAt: serverTimestamp(),
+      });
+    }
+    return toAppUser(cred.user);
+  },
+
+  // ─── Password Reset ───────────────────────────────────────
+  async resetPassword(email: string): Promise<void> {
+    await sendPasswordResetEmail(auth, email);
+  },
+
+  // ─── Session ──────────────────────────────────────────────
+  logout(): Promise<void> {
+    return signOut(auth);
   },
 
   getCurrentUser(): User | null {
-    const session = localStorage.getItem(SESSION_KEY);
-    return session ? JSON.parse(session) : null;
-  }
+    const fbUser = auth.currentUser;
+    return fbUser ? toAppUser(fbUser) : null;
+  },
+
+  /** Subscribe to auth state changes. Returns unsubscribe fn. */
+  onAuthChanged(callback: (user: User | null) => void): () => void {
+    return onAuthStateChanged(auth, (fbUser) => {
+      callback(fbUser ? toAppUser(fbUser) : null);
+    });
+  },
 };

@@ -8,6 +8,7 @@ import AuthScreen from './components/AuthScreen';
 import { Screen, GenerationParams, ChatMessage, Project, User } from './types';
 import { generateAppScreensStream, refineScreen } from './services/geminiService';
 import { authService } from './services/authService';
+import { firestoreService } from './services/firestoreService';
 import { MOCK_SCREEN } from './constants';
 import { TEMPLATES, Template } from './templates';
 import { toPng, toSvg } from 'html-to-image';
@@ -27,27 +28,27 @@ const App: React.FC = () => {
   
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  // Check for session on mount
+  // Check for session on mount via Firebase listener
+  const [authLoading, setAuthLoading] = useState(true);
   useEffect(() => {
-    const sessionUser = authService.getCurrentUser();
-    if (sessionUser) {
-      setUser(sessionUser);
-    }
+    const unsubscribe = authService.onAuthChanged((fbUser) => {
+      setUser(fbUser);
+      setAuthLoading(false);
+    });
+    return unsubscribe;
   }, []);
 
-  // Load User's Projects whenever 'user' changes
+  // Load User's Projects from Firestore whenever 'user' changes
   useEffect(() => {
-    if (user) {
-        const key = `cursorui_projects_${user.email}`;
-        const saved = localStorage.getItem(key);
-        if (saved) {
-            try {
-                setProjects(JSON.parse(saved));
-            } catch (e) {
-                console.error("Failed to parse projects", e);
-                setProjects([]);
-            }
-        } else {
+    if (!user) {
+        setProjects([]);
+        setActiveProjectId(null);
+        return;
+    }
+
+    // Real-time listener on user's projects collection
+    const unsubscribe = firestoreService.subscribeProjects(user.id, (firebaseProjects) => {
+        if (firebaseProjects.length === 0) {
             // Give new users the demo project
             const demo: Project = {
                 id: 'demo-project',
@@ -57,21 +58,15 @@ const App: React.FC = () => {
                 lastModified: Date.now(),
                 screens: [MOCK_SCREEN]
             };
-            setProjects([demo]);
+            firestoreService.saveProject(user.id, demo);
+            // The listener will fire again with the saved demo
+        } else {
+            setProjects(firebaseProjects);
         }
-    } else {
-        setProjects([]);
-        setActiveProjectId(null);
-    }
-  }, [user]);
+    });
 
-  // Persist projects to the user-specific key
-  useEffect(() => {
-    if (user && projects.length >= 0) {
-        const key = `cursorui_projects_${user.email}`;
-        localStorage.setItem(key, JSON.stringify(projects));
-    }
-  }, [projects, user]);
+    return unsubscribe;
+  }, [user]);
 
 
   // Derived state
@@ -100,13 +95,19 @@ const App: React.FC = () => {
   };
 
   const updateActiveProject = (updater: (project: Project) => Project) => {
-      if (!activeProjectId) return;
-      setProjects(prev => prev.map(p => {
-          if (p.id === activeProjectId) {
-              return updater(p);
-          }
-          return p;
-      }));
+      if (!activeProjectId || !user) return;
+      setProjects(prev => {
+          const updated = prev.map(p => {
+              if (p.id === activeProjectId) {
+                  const result = updater(p);
+                  // Persist to Firestore in background
+                  firestoreService.saveProject(user.id, result).catch(console.error);
+                  return result;
+              }
+              return p;
+          });
+          return updated;
+      });
   };
 
   // --- ACTIONS ---
@@ -115,8 +116,8 @@ const App: React.FC = () => {
       setUser(user);
   };
 
-  const handleLogout = () => {
-      authService.logout();
+  const handleLogout = async () => {
+      await authService.logout();
       setUser(null);
   };
 
@@ -131,7 +132,9 @@ const App: React.FC = () => {
       };
       setProjects(prev => [newProject, ...prev]);
       setActiveProjectId(newProject.id);
-      setMessages([]); // Clear chat for new session
+      setMessages([]);
+      // Persist to Firestore
+      if (user) firestoreService.saveProject(user.id, newProject).catch(console.error);
   };
   
   const handleCreateFromTemplate = (template: Template) => {
@@ -154,12 +157,16 @@ const App: React.FC = () => {
       setActiveProjectId(newProject.id);
       setActiveScreenId(clonedScreens[0].id);
       setMessages([]);
+      // Persist to Firestore
+      if (user) firestoreService.saveProject(user.id, newProject).catch(console.error);
   };
 
   const handleDeleteProject = (id: string) => {
       if (confirm('Are you sure you want to delete this project?')) {
           setProjects(prev => prev.filter(p => p.id !== id));
           if (activeProjectId === id) setActiveProjectId(null);
+          // Delete from Firestore
+          if (user) firestoreService.deleteProject(user.id, id).catch(console.error);
       }
   };
 
@@ -462,6 +469,17 @@ const App: React.FC = () => {
   };
 
   // --- RENDER ---
+
+  if (authLoading) {
+      return (
+          <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+              <div className="flex flex-col items-center gap-4">
+                  <div className="w-10 h-10 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-zinc-500 text-sm tracking-widest uppercase">Loading...</span>
+              </div>
+          </div>
+      );
+  }
 
   if (!user) {
       return <AuthScreen onLogin={handleLogin} />;
