@@ -162,7 +162,11 @@ export default function Showcase() {
   };
 
   const openProductPage = (project: Project) => {
-    router.push(`/showcase/${project.slug}`);
+    if (project.slug === "cursor-for-ui") {
+      router.push("/saas/cursor-for-ui");
+    } else {
+      router.push(`/showcase/${project.slug}`);
+    }
   };
 
   return (

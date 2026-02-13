@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Navbar, Footer } from "@/components";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import ProductDetailClient from "./ProductDetailClient";
@@ -123,6 +124,11 @@ export function generateStaticParams() {
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+
+  if (slug === "cursor-for-ui") {
+    redirect("/saas/cursor-for-ui");
+  }
+
   const project = projects.find((p) => p.slug === slug);
 
   return (
