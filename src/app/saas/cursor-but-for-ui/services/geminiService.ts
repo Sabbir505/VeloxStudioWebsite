@@ -28,7 +28,6 @@ async function tryWithModelFallback<T>(
   let lastError: any;
   for (const model of MODEL_FALLBACK_CHAIN) {
     try {
-      console.log(`Trying model: ${model}`);
       return await retryWithBackoff(() => operation(model), retriesPerModel, initialDelay);
     } catch (error: any) {
       lastError = error;
@@ -37,10 +36,9 @@ async function tryWithModelFallback<T>(
       const message = error?.message || '';
       const isUnavailable = code === 503 || code === 429 || status === 'UNAVAILABLE' || status === 'RESOURCE_EXHAUSTED' || message.includes('503') || message.includes('429');
       if (isUnavailable) {
-        console.warn(`Model ${model} unavailable, trying next fallback...`);
         continue;
       }
-      throw error; // Non-availability error, don't try other models
+      throw error;
     }
   }
   throw lastError;
@@ -73,7 +71,6 @@ async function retryWithBackoff<T>(operation: () => Promise<T>, retries = 4, ini
       const isRateLimit = code === 429 || status === 'RESOURCE_EXHAUSTED' || (typeof message === 'string' && message.includes('429'));
       if ((isRateLimit || code === 503) && i < retries - 1) {
         const delay = initialDelay * Math.pow(2, i);
-        console.warn(`API Error ${code}. Retrying in ${delay/1000}s...`);
         await sleep(delay);
         continue;
       }

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PreviewArea from './components/PreviewArea';
 import GeneratorControls from './components/GeneratorControls';
 import Sidebar from './components/Sidebar';
@@ -25,8 +25,14 @@ const App: React.FC = () => {
   const [activeScreenId, setActiveScreenId] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [promptCount, setPromptCount] = useState<number>(0);
+  const [showLimitDialog, setShowLimitDialog] = useState<boolean>(false);
   
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  // --- FREE TIER LIMITS ---
+  const MAX_PROJECTS = 1;
+  const MAX_PROMPTS = 3;
 
   // Check for session on mount via Firebase listener
   const [authLoading, setAuthLoading] = useState(true);
@@ -122,6 +128,11 @@ const App: React.FC = () => {
   };
 
   const handleCreateProject = (name: string) => {
+      // Free tier: max 1 project
+      if (projects.length >= MAX_PROJECTS) {
+          setShowLimitDialog(true);
+          return;
+      }
       const newProject: Project = {
           id: `proj-${Date.now()}`,
           name: name,
@@ -138,6 +149,11 @@ const App: React.FC = () => {
   };
   
   const handleCreateFromTemplate = (template: Template) => {
+      // Free tier: max 1 project
+      if (projects.length >= MAX_PROJECTS) {
+          setShowLimitDialog(true);
+          return;
+      }
       // Deep clone screens to ensure unique IDs if needed in future
       const clonedScreens = template.screens.map(s => ({
           ...s,
@@ -146,7 +162,7 @@ const App: React.FC = () => {
 
       const newProject: Project = {
           id: `proj-${Date.now()}`,
-          name: template.name, // Or allow user to name it
+          name: template.name,
           description: `Started from ${template.name} template.`,
           createdAt: Date.now(),
           lastModified: Date.now(),
@@ -193,6 +209,12 @@ const App: React.FC = () => {
 
   const handleGenerate = async (params: GenerationParams) => {
     if (!activeProjectId) return;
+    // Free tier: max 3 prompts
+    if (promptCount >= MAX_PROMPTS) {
+        setShowLimitDialog(true);
+        return;
+    }
+    setPromptCount(prev => prev + 1);
     setIsProcessing(true);
     
     // Create new abort controller
@@ -307,6 +329,12 @@ const App: React.FC = () => {
 
   const handleRefine = async (instruction: string, scope: 'current' | 'all' = 'current') => {
     if (!activeProjectId) return;
+    // Free tier: max 3 prompts
+    if (promptCount >= MAX_PROMPTS) {
+        setShowLimitDialog(true);
+        return;
+    }
+    setPromptCount(prev => prev + 1);
     
     // Prepare targets
     let targets: Screen[] = [];
@@ -505,6 +533,44 @@ const App: React.FC = () => {
   return (
     <div className="flex h-screen w-full bg-zinc-950 text-zinc-200 font-sans overflow-hidden selection:bg-indigo-500/30 selection:text-indigo-200">
       
+      {/* Subscription Limit Dialog */}
+      {showLimitDialog && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-zinc-900 border border-white/10 rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl text-center animate-in zoom-in-95 duration-300">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-5">
+              <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-2">Free Tier Limit Reached</h3>
+            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+              You've used all your free generations. Our <span className="text-indigo-400 font-semibold">Pro subscription</span> is coming soon with unlimited projects, unlimited prompts, priority AI models, and more.
+            </p>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
+              <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Your usage</p>
+              <div className="flex justify-around">
+                <div>
+                  <p className="text-2xl font-bold text-white">{projects.length}/{MAX_PROJECTS}</p>
+                  <p className="text-[11px] text-zinc-500">Projects</p>
+                </div>
+                <div className="w-px bg-white/10"></div>
+                <div>
+                  <p className="text-2xl font-bold text-white">{promptCount}/{MAX_PROMPTS}</p>
+                  <p className="text-[11px] text-zinc-500">Prompts</p>
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowLimitDialog(false)}
+              className="w-full py-3 bg-white text-black rounded-xl font-bold text-sm hover:bg-zinc-200 transition-all active:scale-[0.98]"
+            >
+              Got it — I'll wait!
+            </button>
+            <p className="text-[11px] text-zinc-600 mt-3">Stay tuned. Big things are coming.</p>
+          </div>
+        </div>
+      )}
+
       <Sidebar 
          screens={screens}
          activeScreenId={activeScreenId}
