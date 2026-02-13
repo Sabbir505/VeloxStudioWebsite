@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { AnalysisResult as ResultType, Trend } from '../types';
+import type { AnalysisResult as ResultType } from '../types';
+import { Trend } from '../types';
 import Button from './Button';
 import { DISCLAIMER_TEXT } from '../constants';
 

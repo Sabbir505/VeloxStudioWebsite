@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MarketOverviewResult } from '../types';
+import type { MarketOverviewResult } from '../types';
 import Button from './Button';
 import { DISCLAIMER_TEXT } from '../constants';
 
