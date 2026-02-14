@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { parseCVFromText } from './services/geminiService';
 import { CVData, TemplateType } from './types';
 import ModernTemplate from './components/templates/ModernTemplate';
@@ -11,8 +11,13 @@ import TechTemplate from './components/templates/TechTemplate';
 import ElegantTemplate from './components/templates/ElegantTemplate';
 import CompactTemplate from './components/templates/CompactTemplate';
 import CVEditor from './components/CVEditor';
-import { FileText, Download, Edit2, Layout, Sparkles, AlertCircle, Image as ImageIcon, Loader2, ChevronRight, Wand2, Maximize2, Minimize2, CheckCircle2, Shield, ArrowRight, Star, MousePointerClick, Copy } from 'lucide-react';
+import AuthScreen from './components/AuthScreen';
+import { authService, User } from './services/authService';
+import { firestoreService } from './services/firestoreService';
+import { FileText, Download, Edit2, Layout, Sparkles, AlertCircle, Image as ImageIcon, Loader2, ChevronRight, Wand2, Maximize2, Minimize2, CheckCircle2, Shield, ArrowRight, Star, MousePointerClick, Copy, LogOut, Lock, X } from 'lucide-react';
 import html2canvas from 'html2canvas';
+
+const MAX_FREE_ACTIONS = 3;
 
 // Default empty state to prevent crashes if something goes wrong
 const EMPTY_DATA: CVData = {
@@ -25,17 +30,52 @@ const EMPTY_DATA: CVData = {
 };
 
 const App: React.FC = () => {
+  // Auth state
+  const [authLoading, setAuthLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [usageCount, setUsageCount] = useState(0);
+  const [showLimitDialog, setShowLimitDialog] = useState(false);
+
   const [inputText, setInputText] = useState('');
   const [cvData, setCvData] = useState<CVData | null>(null);
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>(TemplateType.MODERN);
-  const [viewMode, setViewMode] = useState<'editor' | 'preview' | 'split'>('split'); // Mobile mostly uses editor/preview toggle
+  const [viewMode, setViewMode] = useState<'editor' | 'preview' | 'split'>('split');
   
-  // Scaling logic state
   const [scale, setScale] = useState(1);
   const previewRef = useRef<HTMLDivElement>(null);
+
+  // Listen for auth state changes
+  useEffect(() => {
+    const unsubscribe = authService.onAuthChanged((appUser) => {
+      if (appUser) {
+        setUser(appUser);
+        // Load usage count in background (don't block auth)
+        firestoreService.getUsageCount(appUser.id).then(setUsageCount).catch(() => setUsageCount(0));
+      } else {
+        setUser(null);
+        setUsageCount(0);
+      }
+      setAuthLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const refreshUsageCount = async () => {
+    if (user) {
+      const count = await firestoreService.getUsageCount(user.id);
+      setUsageCount(count);
+    }
+  };
+
+  const handleLogout = async () => {
+    await authService.logout();
+    setUser(null);
+    setCvData(null);
+    setInputText('');
+  };
 
   // Auto-fit logic to ensure content fits A4 height (approx 1123px at 96dpi / 3508px at 300dpi equivalent logic)
   useLayoutEffect(() => {
@@ -70,11 +110,26 @@ const App: React.FC = () => {
   const handleGenerate = async () => {
     if (!inputText.trim()) return;
     
+    // Free-tier check
+    if (user) {
+      const allowed = await firestoreService.canPerformAction(user.id, MAX_FREE_ACTIONS);
+      if (!allowed) {
+        await refreshUsageCount();
+        setShowLimitDialog(true);
+        return;
+      }
+    }
+
     setLoading(true);
     setError(null);
     try {
       const parsed = await parseCVFromText(inputText);
       setCvData(parsed);
+      // Increment usage after successful generation
+      if (user) {
+        await firestoreService.incrementUsage(user.id);
+        await refreshUsageCount();
+      }
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Failed to process your CV. Please try again or check your API key.");
@@ -86,6 +141,16 @@ const App: React.FC = () => {
   const handleDownloadImage = async () => {
     const element = document.getElementById('resume-preview');
     if (!element) return;
+
+    // Free-tier check
+    if (user) {
+      const allowed = await firestoreService.canPerformAction(user.id, MAX_FREE_ACTIONS);
+      if (!allowed) {
+        await refreshUsageCount();
+        setShowLimitDialog(true);
+        return;
+      }
+    }
 
     setDownloading(true);
     
@@ -171,6 +236,11 @@ const App: React.FC = () => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      // Increment usage after successful download
+      if (user) {
+        await firestoreService.incrementUsage(user.id);
+        await refreshUsageCount();
+      }
     } catch (err) {
       console.error("Image generation failed", err);
       setError("Failed to generate image. Please try again.");
@@ -222,10 +292,56 @@ const App: React.FC = () => {
     }
   };
 
+  // Auth loading screen
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin mx-auto mb-6"></div>
+          <p className="text-slate-500 font-medium">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Auth screen
+  if (!user) {
+    return <AuthScreen onLogin={(u) => setUser(u)} />;
+  }
+
+  // Limit Dialog Component
+  const LimitDialog = () => showLimitDialog ? (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-200 relative animate-fade-in">
+        <button onClick={() => setShowLimitDialog(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+          <X size={20} />
+        </button>
+        <div className="text-center">
+          <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Lock className="w-8 h-8 text-amber-600" />
+          </div>
+          <h3 className="text-2xl font-bold text-slate-900 mb-2">Free Tier Limit Reached</h3>
+          <p className="text-slate-500 mb-6">You've used <span className="font-bold text-slate-800">{usageCount}</span> of <span className="font-bold text-slate-800">{MAX_FREE_ACTIONS}</span> free actions.</p>
+          <div className="w-full bg-slate-100 rounded-full h-3 mb-6">
+            <div className="bg-gradient-to-r from-amber-500 to-red-500 h-3 rounded-full transition-all" style={{ width: `${Math.min(100, (usageCount / MAX_FREE_ACTIONS) * 100)}%` }}></div>
+          </div>
+          <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-6">
+            <p className="text-sm text-blue-700 font-medium">🚀 Pro subscription coming soon!</p>
+            <p className="text-xs text-blue-500 mt-1">Unlimited CV generations, all templates, and priority support.</p>
+          </div>
+          <button onClick={() => setShowLimitDialog(false)} className="w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors">
+            Got it
+          </button>
+        </div>
+      </div>
+    </div>
+  ) : null;
+
   // If no data yet, show Landing/Input
   if (!cvData && !loading) {
     return (
       <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-200">
+        <LimitDialog />
         
         {/* Navigation */}
         <nav className="fixed w-full z-50 bg-white/70 backdrop-blur-lg border-b border-white/50">
@@ -236,10 +352,19 @@ const App: React.FC = () => {
               </div>
               <span className="font-bold text-xl tracking-tight text-slate-900">CV Forge</span>
             </div>
-            <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
-              <button onClick={() => scrollToSection('features')} className="hover:text-blue-600 transition-colors">Features</button>
-              <button onClick={() => scrollToSection('how-it-works')} className="hover:text-blue-600 transition-colors">How it Works</button>
-              <button onClick={() => scrollToSection('templates')} className="hover:text-blue-600 transition-colors">Templates</button>
+            <div className="flex items-center gap-6">
+              <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+                <button onClick={() => scrollToSection('features')} className="hover:text-blue-600 transition-colors">Features</button>
+                <button onClick={() => scrollToSection('how-it-works')} className="hover:text-blue-600 transition-colors">How it Works</button>
+                <button onClick={() => scrollToSection('templates')} className="hover:text-blue-600 transition-colors">Templates</button>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-slate-500 hidden sm:inline">{user.email}</span>
+                <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded-full font-bold">{usageCount}/{MAX_FREE_ACTIONS}</span>
+                <button onClick={handleLogout} className="p-2 text-slate-400 hover:text-red-500 transition-colors" title="Logout">
+                  <LogOut size={18} />
+                </button>
+              </div>
             </div>
           </div>
         </nav>
@@ -272,7 +397,7 @@ const App: React.FC = () => {
                   <CheckCircle2 size={16} className="text-emerald-500" /> Free to use
                 </div>
                 <div className="flex items-center gap-2 text-sm text-slate-500 font-medium">
-                  <CheckCircle2 size={16} className="text-emerald-500" /> No signup required
+                  <CheckCircle2 size={16} className="text-emerald-500" /> 3 free generations
                 </div>
                 <div className="flex items-center gap-2 text-sm text-slate-500 font-medium">
                   <CheckCircle2 size={16} className="text-emerald-500" /> Privacy focused
@@ -545,6 +670,7 @@ const App: React.FC = () => {
   // Main Editor/Preview Interface
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col h-screen overflow-hidden print:h-auto print:overflow-visible print:bg-white font-sans">
+      <LimitDialog />
       
       {/* Modern Sticky Navbar */}
       <nav className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200/60 px-6 py-3 flex justify-between items-center shrink-0 h-18 shadow-sm print:hidden transition-all">
@@ -605,6 +731,14 @@ const App: React.FC = () => {
            >
               {downloading ? <Loader2 size={20} className="animate-spin" /> : <Download size={20} />}
            </button>
+           
+           {/* User Info & Logout */}
+           <div className="flex items-center gap-2 border-l border-slate-200 pl-4">
+             <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded-full font-bold">{usageCount}/{MAX_FREE_ACTIONS}</span>
+             <button onClick={handleLogout} className="p-2 text-slate-400 hover:text-red-500 transition-colors" title="Logout">
+               <LogOut size={18} />
+             </button>
+           </div>
         </div>
       </nav>
 

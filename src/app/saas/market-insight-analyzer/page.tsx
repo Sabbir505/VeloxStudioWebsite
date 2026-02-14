@@ -197,6 +197,8 @@ export default function MarketInsightAnalyzerPage() {
                 <div className="flex flex-wrap gap-4 mb-10">
                   <Link
                     href="/market-insight-analyzer/index.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group inline-flex items-center gap-2.5 px-8 py-4 bg-gradient-to-r from-accent-primary to-accent-secondary text-black font-bold rounded-xl hover:shadow-[0_0_50px_rgba(0,255,255,0.55)] transition-all duration-300"
                   >
                     <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -404,14 +406,66 @@ export default function MarketInsightAnalyzerPage() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
-              { emoji: "🚀", title: "Startup Founders", desc: "Validate your next big idea before investing months of development. Get a GO/NO-GO verdict backed by real market data." },
-              { emoji: "💼", title: "Product Managers", desc: "Research competitive landscapes instantly. Understand pricing, features, and user sentiment without weeks of manual analysis." },
-              { emoji: "📊", title: "Investors & VCs", desc: "Quickly assess market viability of pitch deck ideas. Get TAM estimates, competitive density, and growth trend data." },
-              { emoji: "🎓", title: "Business Students", desc: "Build professional market analysis reports for coursework and competitions. Powered by real-time AI research." },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.58-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"
+                    />
+                  </svg>
+                ),
+                title: "Startup Founders",
+                desc: "Validate your next big idea before investing months of development. Get a GO/NO-GO verdict backed by real market data.",
+              },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 12h6m-6 4h6M7.5 4.5h9A1.5 1.5 0 0118 6v14.25A1.5 1.5 0 0116.5 21h-9A1.5 1.5 0 016 19.5V6A1.5 1.5 0 017.5 4.5z"
+                    />
+                  </svg>
+                ),
+                title: "Product Managers",
+                desc: "Research competitive landscapes instantly. Understand pricing, features, and user sentiment without weeks of manual analysis.",
+              },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 17l6-6 4 4 8-8" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 7v6h-6" />
+                  </svg>
+                ),
+                title: "Investors & VCs",
+                desc: "Quickly assess market viability of pitch deck ideas. Get TAM estimates, competitive density, and growth trend data.",
+              },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 14.25c3.314 0 6-1.343 6-3V6.75c0-1.657-2.686-3-6-3s-6 1.343-6 3v4.5c0 1.657 2.686 3 6 3z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 11.25v6c0 1.657 2.686 3 6 3s6-1.343 6-3v-6"
+                    />
+                  </svg>
+                ),
+                title: "Business Students",
+                desc: "Build professional market analysis reports for coursework and competitions. Powered by real-time AI research.",
+              },
             ].map((uc, i) => (
               <RevealOnScroll key={i}>
                 <div className="group h-full bg-gradient-to-br from-surface to-surface-elevated border border-border-custom rounded-2xl p-6 hover:border-accent-primary/40 transition-all duration-500 text-center">
-                  <div className="text-4xl mb-4">{uc.emoji}</div>
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-accent-primary/10 border border-accent-primary/25 text-accent-primary mb-4 group-hover:scale-105 transition-transform">
+                    {uc.icon}
+                  </div>
                   <h3 className="text-base font-bold text-text-primary mb-2 group-hover:text-accent-primary transition-colors">{uc.title}</h3>
                   <p className="text-sm text-text-secondary leading-relaxed">{uc.desc}</p>
                 </div>
@@ -446,6 +500,8 @@ export default function MarketInsightAnalyzerPage() {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Link
                     href="/market-insight-analyzer/index.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group inline-flex items-center gap-2.5 px-10 py-4 bg-gradient-to-r from-accent-primary to-accent-secondary text-black font-bold rounded-xl hover:shadow-[0_0_60px_rgba(0,255,255,0.55)] transition-all duration-300 text-lg"
                   >
                     <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>

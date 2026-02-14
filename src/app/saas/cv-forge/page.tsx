@@ -198,6 +198,8 @@ export default function CVForgePage() {
                 <div className="flex flex-wrap gap-4 mb-10">
                   <Link
                     href="/cv-forge/index.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group inline-flex items-center gap-2.5 px-8 py-4 bg-gradient-to-r from-accent-primary to-accent-secondary text-black font-bold rounded-xl hover:shadow-[0_0_50px_rgba(0,255,255,0.55)] transition-all duration-300"
                   >
                     <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -443,6 +445,8 @@ export default function CVForgePage() {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Link
                     href="/cv-forge/index.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group inline-flex items-center gap-2.5 px-10 py-4 bg-gradient-to-r from-accent-primary to-accent-secondary text-black font-bold rounded-xl hover:shadow-[0_0_60px_rgba(0,255,255,0.55)] transition-all duration-300 text-lg"
                   >
                     <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>

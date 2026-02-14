@@ -81,15 +81,6 @@ const projects: Project[] = [
     isMobileApp: false,
   },
   {
-    name: "Market Mind AI",
-    slug: "market-mind-ai",
-    category: "AI / Analytics",
-    description: "Intelligent market analysis tool that leverages AI to provide deep insights into market trends and consumer behavior.",
-    images: ["/Showcase/market_mind_AI.png"],
-    tags: ["AI", "Analytics", "Web App"],
-    isMobileApp: false,
-  },
-  {
     name: "Market Insight Analyzer",
     slug: "market-insight-analyzer",
     category: "AI / Market Research",
@@ -113,6 +104,14 @@ export default function Showcase() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const router = useRouter();
+
+  const getImageClassName = (project: Project) => {
+    if (project.slug === "cursor-for-ui") {
+      return "object-contain scale-95 transition-transform duration-500 hover:scale-100";
+    }
+
+    return "object-cover transition-transform duration-500 hover:scale-105";
+  };
 
   const canGoLeft = currentIndex > 0;
   const canGoRight = currentIndex < projects.length - 1;
@@ -281,7 +280,7 @@ export default function Showcase() {
                               src={project.images[0]} 
                               alt={project.name} 
                               fill 
-                              className="object-cover transition-transform duration-500 hover:scale-105"
+                              className={getImageClassName(project)}
                               sizes="(max-width: 640px) 280px, (max-width: 768px) 340px, 380px"
                               quality={100}
                             />
@@ -293,7 +292,7 @@ export default function Showcase() {
                               src={project.images[0]} 
                               alt={project.name} 
                               fill 
-                              className="object-cover transition-transform duration-500 hover:scale-105"
+                              className={getImageClassName(project)}
                               sizes="(max-width: 640px) 280px, (max-width: 768px) 340px, 380px"
                               quality={100}
                             />
@@ -304,7 +303,7 @@ export default function Showcase() {
                           src={project.image!} 
                           alt={project.name} 
                           fill 
-                          className="object-cover transition-transform duration-700 hover:scale-110" 
+                          className={getImageClassName(project)}
                           sizes="(max-width: 640px) 280px, (max-width: 768px) 340px, 380px"
                           priority={index === 0}
                           quality={100}

@@ -197,6 +197,8 @@ export default function CryptoChartAIPage() {
                 <div className="flex flex-wrap gap-4 mb-10">
                   <Link
                     href="/cryptochart-ai/index.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group inline-flex items-center gap-2.5 px-8 py-4 bg-gradient-to-r from-accent-primary to-accent-secondary text-black font-bold rounded-xl hover:shadow-[0_0_50px_rgba(0,255,255,0.55)] transition-all duration-300"
                   >
                     <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -404,14 +406,61 @@ export default function CryptoChartAIPage() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
-              { emoji: "📈", title: "Day Traders", desc: "Get instant technical analysis on any chart before entering a position. Save hours of manual charting." },
-              { emoji: "🐦", title: "Crypto Influencers", desc: "Generate professional social media posts with chart analysis — grow your audience with consistent quality." },
-              { emoji: "📊", title: "Swing Traders", desc: "Identify key levels, market structure, and multi-timeframe confluence for better trade entries." },
-              { emoji: "🔍", title: "Signal Reviewers", desc: "Validate trading signals from groups and channels — get unbiased AI assessment of any setup." },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"
+                    />
+                  </svg>
+                ),
+                title: "Day Traders",
+                desc: "Get instant technical analysis on any chart before entering a position. Save hours of manual charting.",
+              },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M10.5 6.75H6.75A2.25 2.25 0 004.5 9v3.75m6-6L19.5 4.5m0 0v6.75m0-6.75h-6.75M4.5 13.5V15A2.25 2.25 0 006.75 17.25h1.5m8.25 0H15A2.25 2.25 0 0112.75 15v-1.5m0 0l-4.5 4.5m0 0h6.75m-6.75 0V11.25"
+                    />
+                  </svg>
+                ),
+                title: "Crypto Influencers",
+                desc: "Generate professional social media posts with chart analysis — grow your audience with consistent quality.",
+              },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 17l6-6 4 4 8-8" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 7v6h-6" />
+                  </svg>
+                ),
+                title: "Swing Traders",
+                desc: "Identify key levels, market structure, and multi-timeframe confluence for better trade entries.",
+              },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m21 21-4.3-4.3m1.8-5.2a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                ),
+                title: "Signal Reviewers",
+                desc: "Validate trading signals from groups and channels — get unbiased AI assessment of any setup.",
+              },
             ].map((uc, i) => (
               <RevealOnScroll key={i}>
                 <div className="group h-full bg-gradient-to-br from-surface to-surface-elevated border border-border-custom rounded-2xl p-6 hover:border-accent-primary/40 transition-all duration-500 text-center">
-                  <div className="text-4xl mb-4">{uc.emoji}</div>
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-accent-primary/10 border border-accent-primary/25 text-accent-primary mb-4 group-hover:scale-105 transition-transform">
+                    {uc.icon}
+                  </div>
                   <h3 className="text-base font-bold text-text-primary mb-2 group-hover:text-accent-primary transition-colors">{uc.title}</h3>
                   <p className="text-sm text-text-secondary leading-relaxed">{uc.desc}</p>
                 </div>
@@ -446,6 +495,8 @@ export default function CryptoChartAIPage() {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Link
                     href="/cryptochart-ai/index.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group inline-flex items-center gap-2.5 px-10 py-4 bg-gradient-to-r from-accent-primary to-accent-secondary text-black font-bold rounded-xl hover:shadow-[0_0_60px_rgba(0,255,255,0.55)] transition-all duration-300 text-lg"
                   >
                     <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>

@@ -6,10 +6,15 @@ import SignalResult from './components/SignalResult';
 import PraiseResult from './components/PraiseResult';
 import MarketOverviewResult from './components/MarketOverviewResult';
 import LandingPage from './components/LandingPage';
+import AuthScreen from './components/AuthScreen';
 import { AppState, UploadedImage } from './types';
 import { analyzeChartImage, analyzeSignalImage, analyzePraiseImage, analyzeMarketOverview } from './services/geminiService';
+import { authService, User } from './services/authService';
+import { firestoreService } from './services/firestoreService';
 import Button from './components/Button';
 import { ALLOWED_FILE_TYPES, MAX_FILE_SIZE_MB } from './constants';
+
+const MAX_FREE_ACTIONS = 3;
 
 const initialState: AppState = {
   images: [],
@@ -22,11 +27,47 @@ const initialState: AppState = {
 };
 
 function App() {
+  // Auth state
+  const [authLoading, setAuthLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [usageCount, setUsageCount] = useState(0);
+  const [showLimitDialog, setShowLimitDialog] = useState(false);
+
   const [view, setView] = useState<'landing' | 'app'>('landing');
   const [activeTab, setActiveTab] = useState<'chart' | 'news' | 'signal' | 'praise'>('chart');
   const [chartMode, setChartMode] = useState<'single' | 'market'>('single');
   const [state, setState] = useState<AppState>(initialState);
   const [isDarkMode, setIsDarkMode] = useState(true);
+
+  // Listen for auth state changes
+  useEffect(() => {
+    const unsubscribe = authService.onAuthChanged((appUser) => {
+      if (appUser) {
+        setUser(appUser);
+        setView('app'); // Go directly to app when user is restored from cache
+        // Load usage count in background (don't block auth)
+        firestoreService.getUsageCount(appUser.id).then(setUsageCount).catch(() => setUsageCount(0));
+      } else {
+        setUser(null);
+        setUsageCount(0);
+      }
+      setAuthLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const refreshUsageCount = async () => {
+    if (user) {
+      const count = await firestoreService.getUsageCount(user.id);
+      setUsageCount(count);
+    }
+  };
+
+  const handleLogout = async () => {
+    await authService.logout();
+    setUser(null);
+    setView('landing');
+  };
 
   // Initialize theme based on HTML class or default
   useEffect(() => {
@@ -53,10 +94,20 @@ function App() {
 
   const runPraiseAnalysis = async () => {
     if (state.images.length === 0) return;
+    // Free-tier check
+    if (user) {
+      const allowed = await firestoreService.canPerformAction(user.id, MAX_FREE_ACTIONS);
+      if (!allowed) {
+        await refreshUsageCount();
+        setShowLimitDialog(true);
+        return;
+      }
+    }
     setState(prev => ({ ...prev, isAnalyzing: true, error: null }));
     try {
       const praiseData = await analyzePraiseImage(state.images);
       setState(prev => ({ ...prev, isAnalyzing: false, praiseResult: praiseData }));
+      if (user) { await firestoreService.incrementUsage(user.id); await refreshUsageCount(); }
     } catch (err: any) {
       setState(prev => ({ ...prev, isAnalyzing: false, error: err.message || "Analysis failed" }));
     }
@@ -69,6 +120,16 @@ function App() {
     if (targetTab === 'praise') {
       setState(prev => ({ ...prev, images: [...prev.images, ...newImages], error: null, praiseResult: null, result: null, signalResult: null, marketResult: null }));
       return;
+    }
+
+    // Free-tier check
+    if (user) {
+      const allowed = await firestoreService.canPerformAction(user.id, MAX_FREE_ACTIONS);
+      if (!allowed) {
+        await refreshUsageCount();
+        setShowLimitDialog(true);
+        return;
+      }
     }
 
     setState(prev => ({ ...prev, images: newImages, error: null, isAnalyzing: true, result: null, signalResult: null, praiseResult: null, marketResult: null }));
@@ -86,6 +147,8 @@ function App() {
             setState(prev => ({ ...prev, isAnalyzing: false, result: analysis }));
           }
       }
+      // Increment usage after successful analysis
+      if (user) { await firestoreService.incrementUsage(user.id); await refreshUsageCount(); }
     } catch (err: any) {
       setState(prev => ({ ...prev, isAnalyzing: false, error: err.message || "Something went wrong during analysis." }));
     }
@@ -137,8 +200,54 @@ function App() {
   const loadingText = getLoadingMessage();
   const hasImages = state.images && state.images.length > 0;
 
+  // Auth loading
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[#05050a] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-cyan-900 border-t-cyan-400 rounded-full animate-spin mx-auto mb-6"></div>
+          <p className="text-slate-500 font-medium">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Auth screen
+  if (!user) {
+    return <AuthScreen onLogin={(u) => { setUser(u); setView('app'); }} />;
+  }
+
+  // Limit Dialog
+  const LimitDialog = () => showLimitDialog ? (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+      <div className="bg-slate-900 rounded-3xl p-8 max-w-md w-full shadow-2xl border border-white/10 relative animate-fade-in">
+        <button onClick={() => setShowLimitDialog(false)} className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <div className="text-center">
+          <div className="w-16 h-16 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">Free Tier Limit Reached</h3>
+          <p className="text-slate-400 mb-6">You've used <span className="font-bold text-white">{usageCount}</span> of <span className="font-bold text-white">{MAX_FREE_ACTIONS}</span> free analyses.</p>
+          <div className="w-full bg-white/5 rounded-full h-3 mb-6">
+            <div className="bg-gradient-to-r from-amber-500 to-red-500 h-3 rounded-full transition-all" style={{ width: `${Math.min(100, (usageCount / MAX_FREE_ACTIONS) * 100)}%` }}></div>
+          </div>
+          <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-2xl p-4 mb-6">
+            <p className="text-sm text-cyan-400 font-medium">🚀 Pro subscription coming soon!</p>
+            <p className="text-xs text-cyan-600 mt-1">Unlimited chart analyses, all modes, and priority processing.</p>
+          </div>
+          <button onClick={() => setShowLimitDialog(false)} className="w-full py-3 bg-white text-slate-900 rounded-xl font-bold hover:bg-slate-100 transition-colors">
+            Got it
+          </button>
+        </div>
+      </div>
+    </div>
+  ) : null;
+
   return (
     <div className="relative min-h-screen text-slate-800 dark:text-slate-200 selection:bg-cyan-500/30 selection:text-cyan-900 dark:selection:text-cyan-50 bg-slate-50 dark:bg-[#05050a] transition-colors duration-300 overflow-x-hidden">
+      <LimitDialog />
       
       {/* --- Dynamic Background (Persistent) --- */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
@@ -167,6 +276,7 @@ function App() {
                 </span>
               </div>
               <div className="flex items-center gap-4">
+                <span className="text-[10px] bg-cyan-500/10 text-cyan-400 px-2.5 py-1 rounded-full font-bold border border-cyan-500/20">{usageCount}/{MAX_FREE_ACTIONS}</span>
                 <button 
                     onClick={toggleTheme}
                     className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-white/10"
@@ -177,6 +287,28 @@ function App() {
                     ) : (
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
                     )}
+                </button>
+
+                {user && (
+                  <div
+                    className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300"
+                    title={user.email || user.name}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 7.5v9a2.25 2.25 0 0 1-2.25 2.25H4.5A2.25 2.25 0 0 1 2.25 16.5v-9A2.25 2.25 0 0 1 4.5 5.25h15A2.25 2.25 0 0 1 21.75 7.5z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m3 7.5 9 6 9-6" />
+                    </svg>
+                    <span className="text-xs font-semibold max-w-[220px] truncate">
+                      {user.email || user.name}
+                    </span>
+                  </div>
+                )}
+                <button 
+                    onClick={handleLogout}
+                    className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-500 transition-colors border border-slate-200 dark:border-white/10"
+                    title="Logout"
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                 </button>
               </div>
             </div>

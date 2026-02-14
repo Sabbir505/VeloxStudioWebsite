@@ -1,167 +1,29 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CV Forge</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              serif: ['Merriweather', 'serif'],
-              display: ['Playfair Display', 'serif'],
-              mono: ['"Source Code Pro"', 'monospace'],
-            },
-            colors: {
-              primary: '#2563eb',
-              secondary: '#475569',
-            },
-            animation: {
-              'fade-in': 'fadeIn 0.8s ease-out',
-              'slide-up': 'slideUp 0.8s ease-out',
-              'float': 'float 6s ease-in-out infinite',
-              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            },
-            keyframes: {
-              fadeIn: {
-                '0%': { opacity: '0' },
-                '100%': { opacity: '1' },
-              },
-              slideUp: {
-                '0%': { transform: 'translateY(20px)', opacity: '0' },
-                '100%': { transform: 'translateY(0)', opacity: '1' },
-              },
-              float: {
-                '0%, 100%': { transform: 'translateY(0)' },
-                '50%': { transform: 'translateY(-10px)' },
-              }
-            }
-          }
-        }
-      }
-    </script>
     <style>
-      /* Modern Scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-      }
-
-      /* Dot Pattern Background */
-      .bg-dot-pattern {
+      body {
+        font-family: 'Inter', sans-serif;
         background-color: #f8fafc;
-        background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-        background-size: 24px 24px;
+        color: #1e293b;
       }
-      
-      .glass-card {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.5);
-      }
-      
-      .text-gradient {
-        background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
       @media print {
-        @page {
-          margin: 0;
-          size: auto;
-        }
-        body {
-          margin: 0;
-          padding: 0;
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
-          background-color: white !important;
-        }
-
-        /* 
-           Print Strategy: 
-           Hide everything by default using visibility (so we don't break layout contexts immediately).
-           Then show the resume container and position it absolutely at the top-left of the viewport.
-        */
-        body * {
-          visibility: hidden;
-        }
-
-        #resume-preview, #resume-preview * {
-          visibility: visible;
-        }
-
-        #resume-preview {
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 100%;
-          margin: 0 !important;
-          padding: 0 !important;
-          box-shadow: none !important;
-          border: none !important;
-          z-index: 9999;
-          /* Ensure backgrounds print */
-          background-color: white !important;
-        }
-
-        /* Ensure text wrapping and height calculations flow naturally */
-        html, body {
-          height: auto !important;
-          overflow: visible !important;
-        }
-      }
-      
-      @keyframes highlight-pulse {
-        0% {
-          outline: 3px solid #3b82f6;
-          background-color: rgba(59, 130, 246, 0.15);
-        }
-        100% {
-          outline: 3px solid transparent;
-          background-color: transparent;
-        }
-      }
-
-      .highlight-section {
-        animation: highlight-pulse 2s ease-out forwards;
-        border-radius: 4px;
-        transition: all 0.3s;
+        @page { margin: 0; size: auto; }
+        body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
       }
     </style>
-
-<link rel="stylesheet" href="/index.css">
-  <script type="importmap">
-{
-  "imports": {
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
-    "react": "https://esm.sh/react@^19.2.4",
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.39.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "html2canvas": "https://esm.sh/html2canvas@^1.4.1"
-  }
-}
-</script>
-  <script type="module" crossorigin src="/cv-forge/assets/index-CynHZ_Sh.js"></script>
+  <script type="module" crossorigin src="/cv-forge/assets/index-DGGkSGov.js"></script>
 </head>
-  <body class="antialiased text-slate-800">
+  <body>
     <div id="root"></div>
 </body>
 </html>

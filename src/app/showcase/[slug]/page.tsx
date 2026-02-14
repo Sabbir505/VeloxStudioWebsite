@@ -93,17 +93,6 @@ const projects: Project[] = [
     features: ["AI text parsing", "9 professional templates", "Live inline editor", "High-res PNG export", "A4 auto-scaling", "Split view mode"],
   },
   {
-    name: "Market Mind AI",
-    slug: "market-mind-ai",
-    category: "AI / Analytics",
-    description: "Intelligent market analysis tool that leverages AI to provide deep insights into market trends and consumer behavior.",
-    fullDescription: "Market Mind AI is a sophisticated analytics platform that uses artificial intelligence to decode market dynamics and consumer behavior. Our powerful algorithms process vast amounts of data to deliver actionable insights, trend predictions, and competitive analysis. Empower your business decisions with data-driven intelligence that keeps you ahead of the competition.",
-    images: ["/Showcase/market_mind_AI.png", "/Showcase/market_mind_AI_1.png"],
-    tags: ["AI", "Analytics", "Web App"],
-    isMobileApp: false,
-    features: ["Market trend analysis", "Consumer behavior insights", "Competitive intelligence", "Predictive analytics", "Custom reports", "Real-time dashboards"],
-  },
-  {
     name: "Validate Idea",
     slug: "validate-idea",
     category: "AI / Business",

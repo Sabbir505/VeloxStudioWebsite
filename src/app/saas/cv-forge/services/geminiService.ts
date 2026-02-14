@@ -3,9 +3,50 @@ import { CVData } from "../types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-export const parseCVFromText = async (text: string): Promise<CVData> => {
-  const model = "gemini-3-flash-preview";
+const PRIMARY_MODEL = "gemini-3-flash-preview";
+const FALLBACK_MODEL = "gemini-2.5-flash";
 
+function isQuotaOrRateLimitError(error: any): boolean {
+  const status = error?.status || error?.error?.status;
+  const code = error?.code || error?.error?.code;
+  const message: string = String(error?.message || error?.error?.message || "");
+
+  return (
+    code === 429 ||
+    status === "RESOURCE_EXHAUSTED" ||
+    status === "UNAVAILABLE" ||
+    message.includes("RESOURCE_EXHAUSTED") ||
+    message.includes("Quota exceeded") ||
+    message.includes("rate") && message.includes("limit") ||
+    message.includes("429")
+  );
+}
+
+async function generateJsonWithModel(model: string, prompt: string): Promise<any> {
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(
+      () => reject(new Error("Request timed out - the model took too long to respond. Please try again.")),
+      60000
+    )
+  );
+
+  const apiCall = ai.models.generateContent({
+    model,
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+    },
+  });
+
+  const response: any = await Promise.race([apiCall, timeoutPromise]);
+  if (!response?.text) {
+    throw new Error("No data returned from AI");
+  }
+  const cleanText = response.text.replace(/```json/g, '').replace(/```/g, '').trim();
+  return JSON.parse(cleanText);
+}
+
+export const parseCVFromText = async (text: string): Promise<CVData> => {
   // Prompt that defines the schema in text, which is often more robust for preventing
   // hangs than the strict responseSchema in some preview environments.
   const prompt = `
@@ -66,34 +107,22 @@ export const parseCVFromText = async (text: string): Promise<CVData> => {
   `;
   
   try {
-    // Increased timeout to 60 seconds to allow the model enough time to process complex CVs
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error("Request timed out - the model took too long to respond. Please try again.")), 60000)
-    );
-
-    const apiCall = ai.models.generateContent({
-      model,
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-      },
-    });
-
-    const response: any = await Promise.race([apiCall, timeoutPromise]);
-
-    if (response.text) {
-      // Clean up potential markdown code blocks if the model adds them despite instructions
-      const cleanText = response.text.replace(/```json/g, '').replace(/```/g, '').trim();
-      const parsed = JSON.parse(cleanText) as CVData;
-      
-      // Inject default section order if missing
-      return {
-          ...parsed,
-          sectionOrder: ['experience', 'education', 'skills', 'projects']
-      };
+    let parsed: any;
+    try {
+      parsed = await generateJsonWithModel(PRIMARY_MODEL, prompt);
+    } catch (error: any) {
+      if (isQuotaOrRateLimitError(error)) {
+        parsed = await generateJsonWithModel(FALLBACK_MODEL, prompt);
+      } else {
+        throw error;
+      }
     }
-    
-    throw new Error("No data returned from AI");
+
+    const cvData = parsed as CVData;
+    return {
+      ...cvData,
+      sectionOrder: ['experience', 'education', 'skills', 'projects'],
+    };
   } catch (error) {
     console.error("Gemini Parse Error:", error);
     throw error; // Re-throw to be caught by App.tsx

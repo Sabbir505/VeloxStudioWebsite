@@ -551,14 +551,62 @@ export default function CursorForUIPage() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
-              { emoji: "🚀", title: "Startup Founders", desc: "Validate product ideas with realistic mockups before writing a line of code." },
-              { emoji: "🎨", title: "UI/UX Designers", desc: "Rapidly prototype screens and iterate through designs with AI assistance." },
-              { emoji: "💻", title: "Developers", desc: "Skip the design phase — jump straight to implementation with clear visual specs." },
-              { emoji: "📊", title: "Product Managers", desc: "Communicate feature requirements visually instead of lengthy PRDs." },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.58-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"
+                    />
+                  </svg>
+                ),
+                title: "Startup Founders",
+                desc: "Validate product ideas with realistic mockups before writing a line of code.",
+              },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m9.75 6.75 2.25 2.25m0 0 2.25-2.25M12 9v6m9 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                ),
+                title: "UI/UX Designers",
+                desc: "Rapidly prototype screens and iterate through designs with AI assistance.",
+              },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75 21 12l-3.75 5.25" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 17.25 3 12l3.75-5.25" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 4.5 9.75 19.5" />
+                  </svg>
+                ),
+                title: "Developers",
+                desc: "Skip the design phase — jump straight to implementation with clear visual specs.",
+              },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 12h6m-6 4h6M7.5 4.5h9A1.5 1.5 0 0118 6v14.25A1.5 1.5 0 0116.5 21h-9A1.5 1.5 0 016 19.5V6A1.5 1.5 0 017.5 4.5z"
+                    />
+                  </svg>
+                ),
+                title: "Product Managers",
+                desc: "Communicate feature requirements visually instead of lengthy PRDs.",
+              },
             ].map((uc, i) => (
               <RevealOnScroll key={i}>
                 <div className="group h-full bg-gradient-to-br from-surface to-surface-elevated border border-border-custom rounded-2xl p-6 hover:border-accent-primary/40 transition-all duration-500 text-center">
-                  <div className="text-4xl mb-4">{uc.emoji}</div>
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-accent-primary/10 border border-accent-primary/25 text-accent-primary mb-4 group-hover:scale-105 transition-transform">
+                    {uc.icon}
+                  </div>
                   <h3 className="text-base font-bold text-text-primary mb-2 group-hover:text-accent-primary transition-colors">{uc.title}</h3>
                   <p className="text-sm text-text-secondary leading-relaxed">{uc.desc}</p>
                 </div>
@@ -600,7 +648,7 @@ export default function CursorForUIPage() {
                     <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.58-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
                     </svg>
-                    Launch App — It&apos;s Free
+                    Launch App
                   </a>
                   <Link
                     href="/#contact"
